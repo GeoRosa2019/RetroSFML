@@ -6,67 +6,65 @@
 #include <SFML/Network.hpp>
 using namespace std;
 
+class Player
+{
+public:
+		// Constructor
+	Player()
+		: position(500, 500), angle(45), array(sf::Quads, 4)
+		{
+			array[0].position = sf::Vector2f(0, -30);
+			array[1].position = sf::Vector2f(-30, 30);
+			array[2].position = sf::Vector2f(0, 15);
+			array[3].position = sf::Vector2f(30, 30);
 
+			for (size_t i = 0; i < array.getVertexCount(); i++)
+			{
+				array[i].color = sf::Color::White;
+			}
+			
+		}
+		// Creating a reference to the window
+		void Draw(sf::RenderWindow& window)
+		{
+			sf::Transform transform;
+			transform.translate(position).rotate(angle);
+			window.draw(array, transform);
+		}
+	sf::Vector2f position;
+	float angle;
 
-void rectangleShape() {
-    // Create the main window
-    sf::RenderWindow window(sf::VideoMode(640, 480), "Rendering the rectangle.");
-    // Creating our shape.
-    sf::RectangleShape rectangle(sf::Vector2f(128.0f, 128.0f));
-    rectangle.setFillColor(sf::Color::Red);
-    rectangle.setOrigin(rectangle.getSize().x / 2, rectangle.getSize().y / 2);
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            switch (event.type) {
-                case sf::Event::Closed: // "close requested" event: we close the window
-					window.close();
-					break;
-				case sf::Event::KeyPressed: // Key pressed.
-                    if (event.key.code == sf::Keyboard::Escape) {
-						window.close();
-                        break;
-					}
-                    if (event.key.code == sf::Keyboard::Up) {
-						rectangle.move(0.0f, -10.0f);
-						break;
-					}
-                    if (event.key.code == sf::Keyboard::Down) {
-						rectangle.move(0.0f, 10.0f);
-						break;
-					}
-                    if (event.key.code == sf::Keyboard::Left) {
-						rectangle.move(-10.0f, 0.0f);
-						break;
-					}
-                    if (event.key.code == sf::Keyboard::Right) {
-						rectangle.move(10.0f, 0.0f);
-						break;
-					}
-                    if (event.key.code == sf::Keyboard::B) {
-						rectangle.setFillColor(sf::Color::Blue);
-						break;
-					}
-                    if (event.key.code == sf::Keyboard::G) {
-                        rectangle.setFillColor(sf::Color::Green);
-                        break;
-                    }
-				default:
-					break;
-            }
-
-        }
-        
-
-        window.clear(sf::Color::Black);
-        window.draw(rectangle); // Drawing our shape.
-        window.display();
-    }
-}
-
+private:
+	sf::VertexArray array;
+};
 
 int main()
 {
-    rectangleShape();
-    return 0;
+	// Create the main window Size: 1200x900
+	sf::RenderWindow window(sf::VideoMode(1200, 900), "Asteroids!!!", 
+		sf::Style::Close | sf::Style::Titlebar);
+
+	// Set framerate limit to 60fps
+	sf::Clock clock;
+	
+	Player player;
+	// Game loop  - runs every frame
+	while (window.isOpen())
+	{
+		float deltaTime = clock.restart().asSeconds();
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+			{
+				window.close();
+			}
+		}
+		window.clear();
+
+		player.Draw(window);
+		// draw everything here...
+		window.display();
+	}
+	return 0;
 }
